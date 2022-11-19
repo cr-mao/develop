@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "k8smaster" do |master|
+    master.vm.box =  "ubuntu22"
+    master.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096
+      vb.cpus = 2
+    end
+    master.vm.network "private_network", ip: "192.168.56.80"
+    master.vm.synced_folder "/Users/maozhongyu/code", "/home/www"
+    master.ssh.insert_key = false
+    master.vm.hostname = "k8smaster"
+  end
+
+  config.vm.define "k8snode1" do |node1|
+    node1.vm.box =  "ubuntu22"
+    node1.vm.provider "virtualbox" do |vb|
+      vb.memory = 1536
+      vb.cpus = 2
+    end
+    node1.vm.network "private_network", ip: "192.168.56.81"
+    node1.vm.synced_folder "/Users/maozhongyu/code", "/home/www"
+    node1.ssh.insert_key = false
+    node1.vm.hostname = "k8snode1"
+  end
+
+  config.vm.define "k8snode2" do |node2|
+    node2.vm.box =  "ubuntu22"
+    node2.vm.provider "virtualbox" do |vb|
+      vb.memory = 1536
+      vb.cpus = 2
+    end
+    node2.vm.network "private_network", ip: "192.168.56.82"
+    node2.vm.synced_folder "/Users/maozhongyu/code", "/home/www"
+    node2.ssh.insert_key = false
+    node2.vm.hostname = "k8snode2"
+ end
+
+end
+
