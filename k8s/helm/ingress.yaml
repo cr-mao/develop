@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ngx-ing
+
+  # customize the behaviors of nginx
+  annotations:
+    nginx.org/lb-method: round_robin
+
+spec:
+  ingressClassName: nginx
+
+  rules:
+    - host: ngx.test
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ngx-svc
+                port:
+                  number: 80
+
+
