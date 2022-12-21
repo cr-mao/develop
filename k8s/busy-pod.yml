@@ -30,4 +30,4 @@ spec:
       - /bin/echo
     args:
       - "$(os), $(debug)"
-  #restartPolicy: Never
+  restartPolicy: Never

@@ -17,6 +17,9 @@ kubectl apply -f sleep-job.yml
 kubectl get job
 kubectl get pod
 
+# 观察变化
+kubectl get pod -w
+
 kubectl delete -f sleep-job.yml
 
 kubectl create cj echo-cj --image=busybox --schedule="" $out

@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myngx
-  namespace: myweb
 spec:
   selector:
     matchLabels:
@@ -13,9 +12,11 @@ spec:
       labels:
         app: nginx
     spec:
+      nodeSelector:
+        nodename: a1
       containers:
         - name: nginxtest
-          image: nginx:1.18-alpine
+          image: nginx:alpine
           # 只有镜像不存在时进行镜像拉取
           imagePullPolicy: IfNotPresent
           ports:

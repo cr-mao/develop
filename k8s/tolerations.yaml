@@ -1,0 +1,27 @@
+# 容忍度
+
+# daemonset 默认是不会调度 有污点的 节点（master节点）
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: redis-ds
+  labels:
+    app: redis-ds
+spec:
+  selector:
+    matchLabels:
+      name: redis-ds
+  template:
+    metadata:
+      labels:
+        name: redis-ds
+    spec:
+      containers:
+        - image: redis:5-alpine
+          name: redis
+          ports:
+            - containerPort: 6379
+      tolerations:     #添加容忍度
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+          operator: Exists
