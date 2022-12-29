@@ -84,3 +84,9 @@ kubeadm config images list #可以查看安装 Kubernetes 所需的镜像列
 kubeadm token create --print-join-command
 
 
+
+# 健康状态查看
+kubectl get cs
+
+
+kubectl get endpoints
