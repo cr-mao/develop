@@ -1,19 +1,18 @@
 #!/bin/bash
 #
 #********************************************************************
-#Author:            cr-mao
+#Author:            maozhongyu
 #Date:              2020-02-15
 #FileName:          install_jenkins.sh
-#URL:               https://www.crblog.cc
 #Description:       本脚本只支持Jenkins-2.319.3前版本
 #Copyright (C):     2020 All rights reserved
 #********************************************************************
 
 #JENKINS_VERSION=2.319.3
 JENKINS_VERSION=2.346.2
-URL="https://mirrors.tuna.tsinghua.edu.cn/jenkins/debian-stable/jenkins_${JENKINS_VERSION}_all.deb"
+#URL="https://mirrors.tuna.tsinghua.edu.cn/jenkins/debian-stable/jenkins_${JENKINS_VERSION}_all.deb"
 #URL="https://mirrors.aliyun.com/jenkins/debian-stable/jenkins_${JENKINS_VERSION}_all.deb"
-#URL="https://mirrors.aliyun.com/jenkins/debian-stable/jenkins_2.303.2_all.deb"
+URL="https://mirrors.aliyun.com/jenkins/debian-stable/jenkins_2.332.1_all.deb"
 #URL="https://mirrors.tuna.tsinghua.edu.cn/jenkins/debian-stable/jenkins_2.289.3_all.deb"
 #URL="https://mirrors.aliyun.com/jenkins/debian-stable/jenkins_2.289.3_all.deb"
 #URL="https://mirrors.tuna.tsinghua.edu.cn/jenkins/redhat-stable/jenkins-2.289.3-1.1.noarch.rpm"
@@ -77,7 +76,6 @@ install_jenkins() {
         systemctl start jenkins
     else
         apt -y install daemon net-tools || { color  "安装依赖包失败!" 1 ;exit ; }
-        # 取url 最后斜杠 后面的部分。
         dpkg -i  /usr/local/src/${URL##*/}
     fi
 
