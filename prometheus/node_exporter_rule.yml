@@ -1,0 +1,85 @@
+# 监控 Node-Exporter 挂掉以及内存使用率超过1%这两种情况
+groups:
+  - name: node_exporter
+    rules:
+      # node_exporter 宕机
+      - alert: HostDown
+        expr: up{job="node_exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Host down {{ $labels.instance }}
+      - alert: Cpu01
+        expr: "(1 - sum(increase(node_cpu_seconds_total{mode='idle'}[1m])) by (instance) / sum(increase(node_cpu_seconds_total[1m])) by (instance)) * 100 > 80"
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "服务 {{ $labels.instance }} cpu 使用率过高"
+          description: "{{ $labels.instance }} 的 cpu 在过去1分钟内使用过高，cpu 使用率 {{humanize $value}}."
+      - alert: disk_read
+        expr: "sum by (instance) (rate(node_disk_read_bytes_total[5m]))/1024/1024 > 100"
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "服务 {{ $labels.instance }}  磁盘读取速度状态异常"
+          description: "{{ $labels.instance }} 的磁盘读取速度状态异常，磁盘读取速度为 {{humanize $value}} MB/s"
+      - alert: disk_written
+        # 写入速度大于100mb/s
+        expr: "sum by (instance) (rate(node_disk_written_bytes_total[2m]))/1024 /1024 >100"
+        for: 1m
+        labels:
+          severity: warning # 自定一个一个标签 info 级别
+        annotations:
+          summary: "服务 {{ $labels.instance }}  磁盘写入速度状态异常"
+          description: "{{ $labels.instance }} 的磁盘写入速度状态异常，磁盘写入速度为 {{humanize $value}} MB/s"
+      - alert: filesystem
+        # 磁盘使用率大于百分之80
+        expr: '(node_filesystem_size_bytes {mountpoint ="/"} - node_filesystem_free_bytes {mountpoint ="/"}) / node_filesystem_size_bytes {mountpoint ="/"} * 100 > 80'
+        for: 1m
+        labels:
+          severity: warning # 自定一个一个标签 info 级别
+        annotations:
+          summary: "服务 {{ $labels.instance }} 磁盘使用率过高"
+          description: "{{ $labels.instance }} 的 磁盘在过去1分钟内使用过高，磁盘使用率 {{humanize $value}}."
+      - alert: memory
+        # 内存使用率大于百分之80
+        expr: "((node_memory_MemTotal_bytes-(node_memory_MemFree_bytes+node_memory_Buffers_bytes+node_memory_Cached_bytes))/node_memory_MemTotal_bytes)*100 > 80"
+        for: 1m
+        labels:
+          severity: warning # 自定一个一个标签 info 级别
+        annotations:
+          summary: "服务 {{ $labels.instance }}  内存使用率过高"
+          description: "{{ $labels.instance }} 的 内存使用率过高，内存使用率为 {{humanize $value}}."
+      #主机网络接口可能接收到的数据过多（> 100 MB/s）
+      - alert: HostUnusualNetworkThroughputIn
+        expr: sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          #summary: Host unusual network throughput in (instance {{ $labels.instance }})
+          summary: "{{ $labels.instance }} 网络接口接收到的数据过多,超过100Mb/s"
+          description: "Host network interfaces are probably receiving too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+      #主机网络接口可能发送的数据过多（> 100 MB/s）
+      - alert: HostUnusualNetworkThroughputOut
+        expr: sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          #summary: Host unusual network throughput out (instance {{ $labels.instance }}) "\n"
+          summary: "{{ $labels.instance }} 网络接口可能发送的数据过多,超过100Mb/s"
+          description: "Host network interfaces are probably sending too much data (> 100 MB/s)\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        #检测到 OOM 杀伤
+      - alert: HostOomKillDetected
+        expr: increase(node_vmstat_oom_kill[1m]) > 0
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          #summary: Host OOM kill detected (instance {{ $labels.instance }})
+          summary: "{{ $labels.instance }} 检测到存在内存杀伤。"
+          description: "OOM kill detected\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
