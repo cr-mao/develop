@@ -1,4 +1,4 @@
-## prometheus+alertmanager+飞书告警
+## prometheus飞书告警
 
 1. 执行 node_exporter_install.sh 
 
@@ -17,6 +17,15 @@ alertmanager 的配置文件修改webhook，
  url: "http://192.168.56.10:8088/prometheusalert?type=fs&tpl=prometheus-fs&fsurl=https://open.feishu.cn/open-apis/bot/v2/hook/xxxx"
 
  修改配置文件conf/app.conf, open-feishu=1 开启飞书
+
+
+```shell
+systemctl daemon-reload
+systemctl start node_exporter
+systemctll start alertmanager
+systemctl start PrometheusAlert
+systemctl start prometheus
+```
 
 
 
