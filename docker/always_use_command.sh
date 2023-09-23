@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 ## 常用docker命令
 
@@ -12,6 +12,9 @@ docker run -it xxx  image:tag  /bin/bash
 
 
 # 导出镜像
-docker save  xxx:tag  > xxx.tar 
+docker save  xxx:tag  > xxx.tar
 # 倒入镜像
 docker load < xxx.tar
+
+
+
