@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubeimooc-svc
+  namespace: kubeimooc-system
+spec:
+  selector:
+    app: kubeimooc
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

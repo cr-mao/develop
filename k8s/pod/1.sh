@@ -14,4 +14,10 @@ kubectl get pods -n dev -o wide
 #删除pod
 kubectl delete pod nginx --namespace=dev
 
-kubectl create -f pod-nginx.yaml 
+kubectl create -f pod-nginx.yaml
+
+
+
+kubeclt apply -f busybox.yaml
+kubeclt logs -f busybox -n dev
+
