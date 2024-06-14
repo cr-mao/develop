@@ -1,0 +1,7 @@
+FROM golang:1.21-alpine
+ENV CGO_ENABLED=0 GOOS=linux GO111MODULE=on GOPROXY=https://goproxy.cn/,direct  TZ=Asia/Shanghai
+RUN set -eux && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN apk update && apk add --no-cache tzdata git sshpass openssh make docker
+RUN go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.57.2
+RUN echo "    StrictHostKeyChecking no" >> /etc/ssh/ssh_config && \
+    echo "    UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config

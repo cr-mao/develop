@@ -1,0 +1,36 @@
+variables:
+  DOCKER_IMAGE_NAME: godemo
+  IMAGE_NAME: 192.168.56.83:8080/golang/${DOCKER_IMAGE_NAME}:${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_ID}
+
+image: 192.168.56.83:8080/golang/gitlab-cicd-go1.21:latest
+
+stages:
+  - build
+
+
+# 根据down.sh构建镜像包
+image_build:
+  stage: build
+  before_script:
+    - docker ps
+    - docker login --username=admin -p harbor12345 192.168.56.83:8080
+    - ls -al
+  script:
+    - docker build -f docker/Dockerfile -t $DOCKER_IMAGE_NAME .
+    - docker tag $DOCKER_IMAGE_NAME $IMAGE_NAME
+    - docker push $IMAGE_NAME
+  after_script:
+    - docker rmi $DOCKER_IMAGE_NAME
+    - docker rmi $IMAGE_NAME
+  tags:
+    - docker
+  only:
+    - develop
+    - main
+
+
+
+
+
+
+
